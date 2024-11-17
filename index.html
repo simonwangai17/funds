@@ -1,215 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Funds Management</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funds Page</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-    .navbar {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background-color: #007bff;
-      padding: 10px;
-      color: white;
-    }
+        nav {
+            background-color: #4CAF50; /* Green theme */
+            padding: 10px;
+            text-align: center;
+        }
 
-    .navbar button {
-      background-color: white;
-      color: #007bff;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin: 5px;
+            font-size: 16px;
+        }
 
-    .navbar button:hover {
-      background-color: #0056b3;
-      color: white;
-    }
+        nav a:hover {
+            background-color: #45a049;
+        }
 
-    .container {
-      margin: 20px;
-    }
+        /* Table Styles */
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-    }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
 
-    th {
-      background-color: #007bff;
-      color: white;
-    }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-    td {
-      text-align: center;
-    }
+        /* Button Styles */
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
+        .button:hover {
+            background-color: #45a049;
+        }
 
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 5px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-    }
+        /* Pop-up Styles */
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+            padding-top: 100px;
+        }
 
-    .close {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      float: right;
-    }
+        .popup-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            width: 60%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .close:hover {
-      background-color: #c82333;
-    }
+        h3 {
+            text-align: center;
+        }
 
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
-    }
-  </style>
+        .popup-content p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .popup-content button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .popup-content button:hover {
+            background-color: #45a049;
+        }
+
+        /* Close Button */
+        .close-btn {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            float: right;
+        }
+
+    </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <div class="navbar">
-    <button onclick="loadSection('balance')">Balance</button>
-    <button onclick="showWithdrawPopup()">Withdraw</button>
-    <button onclick="loadSection('tokens')">Tokens</button>
-  </div>
+<!-- Navbar -->
+<nav>
+    <a href="https://simonwangai17.github.io/dash/">Back to Main Page</a>
+    <a href="#" id="balanceBtn">Balance</a>
+    <a href="#" id="withdrawBtn">Withdraw</a>
+</nav>
 
-  <!-- Main Content -->
-  <div class="container" id="mainContent">
-    <!-- Content dynamically loaded here -->
-  </div>
+<!-- Balance Table (Initially Hidden) -->
+<div id="balanceTable" style="display:none;">
+    <h2>Balance Information</h2>
+    <table id="balanceData">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table Data will be populated here -->
+        </tbody>
+    </table>
+</div>
 
-  <!-- Modal for Balance Details -->
-  <div id="balanceModal" class="modal">
-    <div class="modal-content">
-      <button class="close" onclick="closeModal('balanceModal')">Close</button>
-      <h2>Balance Details</h2>
-      <div id="balanceDetails"></div>
+<!-- Pop-up for View Balance (User Info) -->
+<div id="viewBalancePopup" class="popup">
+    <div class="popup-content">
+        <h3>User Information</h3>
+        <p><strong>Name:</strong> Lolen Mwangi</p>
+        <p><strong>Username:</strong> Swolf</p>
+        <p><strong>Earning:</strong> Ksh 100</p>
+        <p><strong>Payable:</strong> Ksh 50</p>
+        
+        <!-- Button to Show More Info -->
+        <button onclick="showMoreInfo()">See More</button>
+        
+        <!-- Additional Info (Initially Hidden) -->
+        <div id="moreInfo" style="display:none;">
+            <p><strong>Survey Payout:</strong> Ksh 30</p>
+            <p><strong>Token Payout:</strong> Ksh 20</p>
+            <p><strong>Referral Payout:</strong> Ksh 50</p>
+            <p><strong>Activation:</strong> Active</p>
+        </div>
+
+        <button class="close-btn" onclick="closePopup('viewBalancePopup')">Close</button>
     </div>
-  </div>
+</div>
 
-  <!-- Modal for Withdrawal -->
-  <div id="withdrawModal" class="modal">
-    <div class="modal-content">
-      <button class="close" onclick="closeModal('withdrawModal')">Close</button>
-      <h2>Withdraw Funds</h2>
-      <iframe src="https://forms.gle/pEYxDhw8JjLbidjw7"></iframe>
+<!-- Pop-up for Withdraw Form -->
+<div id="withdrawPopup" class="popup">
+    <div class="popup-content">
+        <h3>Withdraw Form</h3>
+        <iframe src="https://forms.gle/voGJEqZCUDiFdatS7" frameborder="0" style="width: 100%; height: 400px;"></iframe>
+        <button class="close-btn" onclick="closePopup('withdrawPopup')">Close</button>
     </div>
-  </div>
+</div>
 
-  <!-- Modal for Token History -->
-  <div id="tokenHistoryModal" class="modal">
-    <div class="modal-content">
-      <button class="close" onclick="closeModal('tokenHistoryModal')">Close</button>
-      <h2>Token History</h2>
-      <div id="tokenHistoryDetails"></div>
-    </div>
-  </div>
+<script>
+// Function to fetch and display Balance data
+function fetchBalanceData() {
+    // Example data for table, you can replace with actual Google Sheets fetching if needed
+    const balanceData = [
+        { code: 'REF146399', amount: 'Ksh 100' },
+        
+    ];
 
-  <script>
-    // Function to dynamically load sections
-    function loadSection(section) {
-      const container = document.getElementById('mainContent');
-      if (section === 'balance') {
-        fetchGoogleSheetData(
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzuvY1g7976VnQlNpIaPBtusFx2Mdj-E7azp81jHZvkhCpxd4fdPz3tdnBZGJk6KIOHj5fClBaTzOA/pub?gid=1455009298&single=true&output=csv',
-          (data) => {
-            const table = generateTable(data, ['Username', 'Reference Code'], ['B', 'A']);
-            container.innerHTML = table;
-          }
-        );
-      } else if (section === 'tokens') {
-        fetchGoogleSheetData(
-          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzuvY1g7976VnQlNpIaPBtusFx2Mdj-E7azp81jHZvkhCpxd4fdPz3tdnBZGJk6KIOHj5fClBaTzOA/pub?gid=858825955&single=true&output=csv',
-          (data) => {
-            const table = generateTable(data, ['Username', 'Token'], ['E', 'H']);
-            container.innerHTML = table;
-          }
-        );
-      }
-    }
+    const tableBody = document.querySelector('#balanceData tbody');
+    tableBody.innerHTML = ''; // Clear existing table rows
 
-    // Fetch data from Google Sheet
-    function fetchGoogleSheetData(url, callback) {
-      fetch(url)
-        .then((response) => response.text())
-        .then((data) => {
-          const rows = data.split('\n').map((row) => row.split(','));
-          callback(rows);
-        })
-        .catch((error) => console.error('Error fetching data:', error));
-    }
+    // Populate table with example data
+    balanceData.forEach(item => {
+        const rowHTML = `
+            <tr>
+                <td>${item.code}</td>
+                <td>${item.amount}</td>
+                <td><button class="button" onclick="viewBalance()">View Balance</button></td>
+            </tr>
+        `;
+        tableBody.insertAdjacentHTML('beforeend', rowHTML);
+    });
 
-    // Generate a table from data
-    function generateTable(data, headers, columns) {
-      let table = '<table><thead><tr>';
-      headers.forEach((header) => (table += `<th>${header}</th>`));
-      table += '</tr></thead><tbody>';
-      data.forEach((row, index) => {
-        if (index > 0) {
-          table += '<tr>';
-          columns.forEach((colIndex) => (table += `<td>${row[colIndex]}</td>`));
-          table += `<td><button onclick="viewDetails(${index})">View Balance</button></td></tr>`;
-        }
-      });
-      table += '</tbody></table>';
-      return table;
-    }
+    document.getElementById('balanceTable').style.display = 'block'; // Show the balance table
+}
 
-    // Show Withdrawal Modal
-    function showWithdrawPopup() {
-      document.getElementById('withdrawModal').style.display = 'flex';
-    }
+// Handle 'Balance' Button click
+document.getElementById('balanceBtn').addEventListener('click', function() {
+    fetchBalanceData(); // Fetch and display balance data
+    document.getElementById('withdrawPopup').style.display = 'none';
+    document.getElementById('viewBalancePopup').style.display = 'none';
+});
 
-    // View Balance
-    function viewDetails(index) {
-      // Simulate fetching details based on index
-      const balanceDetails = `<p>Details for User ${index}</p>`;
-      document.getElementById('balanceDetails').innerHTML = balanceDetails;
-      document.getElementById('balanceModal').style.display = 'flex';
-    }
+// Handle 'Withdraw' Button click
+document.getElementById('withdrawBtn').addEventListener('click', function() {
+    document.getElementById('withdrawPopup').style.display = 'block';
+    document.getElementById('balanceTable').style.display = 'none';
+    document.getElementById('viewBalancePopup').style.display = 'none';
+});
 
-    // Close Modal
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
-  </script>
+// Show View Balance Pop-up
+function viewBalance() {
+    document.getElementById('viewBalancePopup').style.display = 'block'; // Show the pop-up
+}
+
+// Show More Info in the View Balance Pop-up
+function showMoreInfo() {
+    document.getElementById("moreInfo").style.display = "block"; // Reveal more information
+}
+
+// Close pop-up function
+function closePopup(popupId) {
+    document.getElementById(popupId).style.display = 'none';
+}
+</script>
+
 </body>
 </html>
