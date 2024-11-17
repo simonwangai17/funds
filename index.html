@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funds Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #007bff;
+      padding: 10px;
+      color: white;
+    }
+
+    .navbar button {
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .navbar button:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+
+    .container {
+      margin: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    td {
+      text-align: center;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .close {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+    }
+
+    .close:hover {
+      background-color: #c82333;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <button onclick="loadSection('balance')">Balance</button>
+    <button onclick="showWithdrawPopup()">Withdraw</button>
+    <button onclick="loadSection('tokens')">Tokens</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container" id="mainContent">
+    <!-- Content dynamically loaded here -->
+  </div>
+
+  <!-- Modal for Balance Details -->
+  <div id="balanceModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal('balanceModal')">Close</button>
+      <h2>Balance Details</h2>
+      <div id="balanceDetails"></div>
+    </div>
+  </div>
+
+  <!-- Modal for Withdrawal -->
+  <div id="withdrawModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal('withdrawModal')">Close</button>
+      <h2>Withdraw Funds</h2>
+      <iframe src="https://forms.gle/pEYxDhw8JjLbidjw7"></iframe>
+    </div>
+  </div>
+
+  <!-- Modal for Token History -->
+  <div id="tokenHistoryModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeModal('tokenHistoryModal')">Close</button>
+      <h2>Token History</h2>
+      <div id="tokenHistoryDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    // Function to dynamically load sections
+    function loadSection(section) {
+      const container = document.getElementById('mainContent');
+      if (section === 'balance') {
+        fetchGoogleSheetData(
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzuvY1g7976VnQlNpIaPBtusFx2Mdj-E7azp81jHZvkhCpxd4fdPz3tdnBZGJk6KIOHj5fClBaTzOA/pub?gid=1455009298&single=true&output=csv',
+          (data) => {
+            const table = generateTable(data, ['Username', 'Reference Code'], ['B', 'A']);
+            container.innerHTML = table;
+          }
+        );
+      } else if (section === 'tokens') {
+        fetchGoogleSheetData(
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vRzuvY1g7976VnQlNpIaPBtusFx2Mdj-E7azp81jHZvkhCpxd4fdPz3tdnBZGJk6KIOHj5fClBaTzOA/pub?gid=858825955&single=true&output=csv',
+          (data) => {
+            const table = generateTable(data, ['Username', 'Token'], ['E', 'H']);
+            container.innerHTML = table;
+          }
+        );
+      }
+    }
+
+    // Fetch data from Google Sheet
+    function fetchGoogleSheetData(url, callback) {
+      fetch(url)
+        .then((response) => response.text())
+        .then((data) => {
+          const rows = data.split('\n').map((row) => row.split(','));
+          callback(rows);
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+    }
+
+    // Generate a table from data
+    function generateTable(data, headers, columns) {
+      let table = '<table><thead><tr>';
+      headers.forEach((header) => (table += `<th>${header}</th>`));
+      table += '</tr></thead><tbody>';
+      data.forEach((row, index) => {
+        if (index > 0) {
+          table += '<tr>';
+          columns.forEach((colIndex) => (table += `<td>${row[colIndex]}</td>`));
+          table += `<td><button onclick="viewDetails(${index})">View Balance</button></td></tr>`;
+        }
+      });
+      table += '</tbody></table>';
+      return table;
+    }
+
+    // Show Withdrawal Modal
+    function showWithdrawPopup() {
+      document.getElementById('withdrawModal').style.display = 'flex';
+    }
+
+    // View Balance
+    function viewDetails(index) {
+      // Simulate fetching details based on index
+      const balanceDetails = `<p>Details for User ${index}</p>`;
+      document.getElementById('balanceDetails').innerHTML = balanceDetails;
+      document.getElementById('balanceModal').style.display = 'flex';
+    }
+
+    // Close Modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+  </script>
+</body>
+</html>
